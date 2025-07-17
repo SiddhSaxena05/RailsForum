@@ -1,0 +1,28 @@
+<%= turbo_include_tags %>
+<%= stylesheet_link_tag "show" %>
+<%= stylesheet_link_tag "application" %>
+<div class = "title font centered"> <%= @post.title %> </div>
+<div class = "font centered">
+
+    <div class = "text-box">
+        <%= @post.content %> <br>
+    </div>
+
+
+    <div class = "styled_button" >
+        <%= link_to "Edit Post", edit_post_path(@post) %>
+    </div>
+    
+    <div class = "styled_button" >
+        <%= link_to "Delete Post", @post, method: :delete,
+            data: {
+                turbo_confirm: "Are you sure?",
+                disable_with: "Processing..."
+            } 
+        %>
+    </div>
+        
+    <div class = "styled_button" >
+        <%= link_to "Back", posts_path %>
+    </div>
+</div>

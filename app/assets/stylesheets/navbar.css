@@ -1,0 +1,23 @@
+.navbar-fixed-top {
+  position: fixed;
+  top:0;
+  right:0;
+  left:0;
+  z-index:999;
+  background-color: #352f2f;
+  height: 6vh;
+}
+
+.navbar-buttons {
+    float: right;
+}
+
+
+.title a {
+    margin: 1vh;
+    float:left;
+    text-transform: uppercase;
+    font-size: 3rem;
+    color: rgb(0, 195, 255);
+    text-decoration: none;
+}

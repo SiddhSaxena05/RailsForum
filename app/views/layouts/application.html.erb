@@ -1,0 +1,61 @@
+<!DOCTYPE html
+<html>
+  <head>
+    <title>PostForum</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "navbar"%>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+
+    <% if notice %>
+      <script> 
+        alert('<%= notice %>');
+      </script>
+    <% end %>
+
+    <% if alert %>
+      <script> 
+        alert('<%= alert %>');
+      </script>
+    <% end %>
+    
+
+    <div class="navbar-fixed-top">
+      <div class = "title" > <%= link_to "BLOG", root_path%></div>
+
+      <% if user_signed_in? %>
+
+      <div class = "navbar-buttons">
+        <div class="styled_button left_button" >
+          <%= link_to "Profile", edit_user_registration_path %>
+        </div>
+        <div class="styled_button right_button">
+          <%= button_to "Log out", destroy_user_session_path, method: :delete, 
+              data: {
+                turbo_confirm: "Are you sure you want to logout?",
+                disable_with: "Processing..."
+              } 
+            %>
+        </div>
+      </div>
+      <% else %>
+      <div class = "navbar-buttons">
+        <div class="styled_button left_button">
+          <%= link_to "Login", new_user_session_path %>
+        </div>
+        <div class="styled_button right_button">
+          <%= link_to "Sign Up", new_user_registration_path %>
+        </div>
+      </div>
+      <% end %>
+    </div>
+
+    <%= yield %>
+  </body>
+</html>

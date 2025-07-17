@@ -1,0 +1,27 @@
+<%= stylesheet_link_tag "application" %>
+
+<%= form_with model: post do |form| %>
+
+    <div class = "font">
+        <% if form.object.errors.any? %>
+            <% form.object.errors.full_messages.each do | message | %>
+                <p> <%= message %> </p>
+            <% end %>
+        <% end %>
+    </div>
+
+    <%= form.label :user_name %> <br>
+    <%= form.text_field :user_name %> <br>
+
+    <%= form.label :title %> <br>
+    <%= form.text_field :title %> <br>
+
+    <%= form.label :content %> <br>
+    <%= form.text_area :content %> <br>
+
+    <%= form.submit class: "styled_button" %>
+<% end %>
+
+<div class = "styled_button">
+    <%= link_to "Back", posts_path%>
+</div>

@@ -1,0 +1,11 @@
+<%= stylesheet_link_tag "application" %>
+<body>
+    <div class = "styled_button large_styled_button">
+        <%= link_to "New Post", new_post_path %> 
+    </div>
+    <% i = 1 %>
+    <% @posts.each do |post| %>
+        <p> <%= i%>. <%= link_to post.title, post_path(post.id)%> by <%= post.user_name %> </p>
+        <% i += 1 %>
+    <% end %>
+</body>
