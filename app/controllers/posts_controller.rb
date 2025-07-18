@@ -34,8 +34,15 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    (current_user.posts.find(params[:id])).destroy
-    redirect_to root_path
+    delete_post = current_user.posts.find(params[:id])
+    if (delete_post.presence)
+      delete_post.destroy
+      redirect_to root_path
+    else
+      flash[:alert] = "you can't delete this post"
+      redirect_to @post
+    end
+    
   end
 
   private
