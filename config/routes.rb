@@ -8,7 +8,12 @@ Rails.application.routes.draw do
   devise_for :users
 
   # Defines the root path route ("/")
-  resources :posts
+  resources :posts do
+    resources :comments do
+      resources :likes, only: [:create, :destroy, :update]
+    end
+    resources :likes, only: [:create, :destroy, :update]
+  end
 
   root "posts#index"
 end

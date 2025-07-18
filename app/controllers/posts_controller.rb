@@ -6,14 +6,15 @@ class PostsController < ApplicationController
   end
 
   def show
+    @comments = @post.comments
   end
 
   def new
-    @post = Post.new
+    @post = current_user.posts.build
   end
 
   def create
-    @post = Post.new(post_params)
+    @post = current_user.posts.build(post_params)
     if @post.save
       redirect_to @post
     else
@@ -33,8 +34,8 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @post.destroy
-    redirect_to posts_path
+    (current_user.posts.find(params[:id])).destroy
+    redirect_to root_path
   end
 
   private
@@ -43,6 +44,6 @@ class PostsController < ApplicationController
     end
 
     def post_params
-      params.require(:post).permit(:user_name, :title, :content)
+      params.require(:post).permit(:title, :content)
     end
 end

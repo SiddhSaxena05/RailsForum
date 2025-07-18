@@ -5,7 +5,7 @@
     </div>
     <% i = 1 %>
     <% @posts.each do |post| %>
-        <p> <%= i%>. <%= link_to post.title, post_path(post.id)%> by <%= post.user_name %> </p>
+        <p> <%= i%>. <%= link_to post.title, post_path(post.id)%> by <%= (User.find(post.user_id)).email %> </p>
         <% i += 1 %>
     <% end %>
 </body>

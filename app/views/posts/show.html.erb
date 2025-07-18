@@ -1,28 +1,76 @@
 <%= turbo_include_tags %>
 <%= stylesheet_link_tag "show" %>
 <%= stylesheet_link_tag "application" %>
-<div class = "title font centered"> <%= @post.title %> </div>
-<div class = "font centered">
+<body>
+    <div class = "title centered"> <%= @post.title %> </div>
+    <div class = "centered">
 
-    <div class = "text-box">
-        <%= @post.content %> <br>
-    </div>
+        <div class = "content-box post">
+            <%= @post.content %> <br>
+        </div>
+
+        <div class = "display-likes"> <%= @post.likes.length %> Likes </div>
+
+        <div class = "styled_button inline-button">
+            
+             <% user_like = @post.likes.find_by(user: current_user)%>
+            <% if user_like %>
+                <%= button_to "Unlike Post", post_like_path(@post, user_like), method: :delete %>
+            <% else %>
+                <%= button_to "Like Post", post_likes_path(@post), params: {likeable_type: @post.class.name, likeable_id: @post.id}%>
+            <% end %>
+        </div>
+                               
 
 
-    <div class = "styled_button" >
-        <%= link_to "Edit Post", edit_post_path(@post) %>
-    </div>
-    
-    <div class = "styled_button" >
-        <%= link_to "Delete Post", @post, method: :delete,
-            data: {
-                turbo_confirm: "Are you sure?",
-                disable_with: "Processing..."
-            } 
-        %>
-    </div>
+        <div class = "styled_button inline-button" >
+            <%= link_to "Edit Post", edit_post_path(@post) %>
+        </div>
         
-    <div class = "styled_button" >
-        <%= link_to "Back", posts_path %>
+        <div class = "styled_button inline-button " >
+            <%= button_to "Delete Post", @post, method: :delete,
+                data: {
+                    turbo_confirm: "Are you sure?",
+                    disable_with: "Processing..."
+                } %>
+        </div>
+
+        <div class = "styled_button inline-button" >
+            <%= link_to "Publish Comment", new_post_comment_path(@post)%>
+        </div>   
+
+        <div class = "styled_button inline-button" >
+            <%= link_to "Back", posts_path %>
+        </div>
+
+        <div class = "comment-section-title comment-section">
+            Comments:
+        </div>
+
+        <div>
+            <% @comments.each do | comment | %>
+                <div class="content-box">
+                    <%= comment.content %>
+                </div>
+                <div class = "comment-section">
+                    By <%= (User.find(comment.user_id)).email %> 
+                    &nbsp;|&nbsp; <%= comment.likes.length %> Likes 
+                    <% if current_user == User.find(comment.user_id) %>
+                        &nbsp;|&nbsp;
+                        <%= link_to "Edit Comment", edit_post_comment_path(@post, comment)%>
+                        &nbsp;|&nbsp;
+                    <% end %>
+
+                    <div class = "styled_button inline-button">
+                    <% user_like = comment.likes.find_by(user: current_user)%>
+                    <% if user_like %>
+                        <%= button_to "Unlike", post_comment_like_path(@post, comment, user_like), method: :delete %>
+                    <% else %>
+                        <%= button_to "Like", post_comment_likes_path(@post, comment), params: {likeable_type: comment.class.name, likeable_id: comment.id}%>
+                    <% end %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
     </div>
-</div>
+</body>

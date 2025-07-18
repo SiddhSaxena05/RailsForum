@@ -15,11 +15,11 @@
  */
 
 body {
-  padding-top: 7vh;
+  padding-top: 12vh;
   margin-left: 0.5vw;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: black;
-  color: white;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   font-size: 20px;
 }
 
@@ -32,11 +32,14 @@ p {
   margin-right: 0.35vw;
   border: 1px solid black; /* Fixed: was just "black" */
   text-align: center;
-  display: inline-block;
+  
   font-size: 1rem; /* Fixed: removed space between "1" and "rem" */
   cursor: pointer;
-  background-color: #b4adad;
+  background-color: rgb(0, 195, 255);
   box-sizing: border-box;
+
+  width: fit-content;
+  height: fit-content;
 }
 
 .large_styled_button {
@@ -59,8 +62,8 @@ p {
   color: black;
 }
 
-.styled_button button,
-.styled_button input[type="submit"] { /* Added input[type="submit"] for Rails button_to */
+.styled_button form button,
+.styled_button input {
   background: none;
   border: none;
   font-family: inherit;
@@ -72,14 +75,14 @@ p {
 }
 
 .styled_button:hover {
-  background-color: black;
+  background-color: rgb(132, 255, 0);
 }
 
 .styled_button:hover a,
 .styled_button:hover button,
-.styled_button:hover input[type="submit"] { /* Added input[type="submit"] */
+input.styled_button:hover { 
   text-decoration: none;
-  color: white;
+  color: black;
 }
 
 /* Added: Handle Rails button_to forms */
@@ -87,4 +90,12 @@ p {
   display: inline;
   margin: 0;
   padding: 0;
+}
+
+textarea {
+  width: 60vw;
+  min-height: 70vh;
+  height: auto;
+  resize: none;
+  font-family: inherit;
 }

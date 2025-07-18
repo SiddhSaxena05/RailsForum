@@ -4,12 +4,17 @@
   right:0;
   left:0;
   z-index:999;
-  background-color: #352f2f;
-  height: 6vh;
+  background-color: #e0dada;
+  height: 10vh;
+}
+
+.navbar-buttons-container {
+    float: right;
+    max-height: 6vh;
 }
 
 .navbar-buttons {
-    float: right;
+  display: inline-block;
 }
 
 
@@ -17,7 +22,14 @@
     margin: 1vh;
     float:left;
     text-transform: uppercase;
-    font-size: 3rem;
+    font-size: 7vh;
     color: rgb(0, 195, 255);
     text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar-icon {
+  float: left;
+  margin: 1vh;
+  width: 7vh;
 }

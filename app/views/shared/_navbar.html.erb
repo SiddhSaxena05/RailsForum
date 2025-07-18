@@ -1,0 +1,33 @@
+<%= stylesheet_link_tag "application"%>
+<div class="navbar-fixed-top">
+    <div class = "title" > 
+        <%= image_tag "scroll.png", class: "navbar-icon" %>
+        <%= link_to "BLOG", root_path%>
+    </div>
+
+    <% if user_signed_in? %>
+
+        <div class = "navbar-buttons-container">
+            <div class="navbar-buttons styled_button left_button" >
+                <%= link_to "Profile", edit_user_registration_path %>
+            </div>
+            <div class="navbar-buttons styled_button right_button">
+                <%= button_to "Log out", destroy_user_session_path, method: :delete, 
+                    data: {
+                    turbo_confirm: "Are you sure you want to logout?",
+                    disable_with: "Processing..."
+                    } 
+                %>
+            </div>
+        </div>
+    <% else %>
+        <div class = "navbar-buttons-container">
+            <div class="navbar-buttons styled_button left_button">
+                <%= link_to "Login", new_user_session_path %>
+            </div>
+            <div class="navbar-buttons styled_button right_button">
+                <%= link_to "Sign Up", new_user_registration_path %>
+            </div>
+        </div>
+    <% end %>
+</div>

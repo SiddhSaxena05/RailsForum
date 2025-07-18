@@ -10,14 +10,38 @@
     text-align: center;
 }
 
-.text-box {
-    
-    min-width: 50vw;
-    max-width: 50vw;
-    min-height: 50vh;
+.inline-button {
+    display: inline-block;
+}
 
-    border: 1px solid white;
+.content-box {
+    border: 1px solid rgb(0, 0, 0);
     text-align: left;
     padding: 1vw;
-    margin-bottom: 2vh;
+    margin-top: 4vh;
+    margin-bottom: 4vh;
+    background-color: rgb(238, 238, 238);
+
+    width: 75vw;
+    white-space: pre-wrap;
+}
+
+.comment-section {
+    margin-left: -50vw;
+    margin-right: auto;
+}
+
+.post {
+    min-height: 50vh;
+}
+
+.comment-section-title {
+    margin-left: -64vw;
+    margin-top: 4vh;
+    font-size: 2rem;
+    color: rgb(0, 0, 0);
+}
+
+.display-likes {
+    display: inline-block;
 }
