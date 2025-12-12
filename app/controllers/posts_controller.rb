@@ -2,7 +2,19 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index, :show]
   def index
-    @posts = Post.all
+    if params[:search].present?
+      user = User.where("email ILIKE ?", "%#{params[:search]}%").first
+      if user
+        @posts = user.posts.includes(:user)
+        @search_query = params[:search]
+      else
+        @posts = Post.none
+        @search_query = params[:search]
+        flash.now[:notice] = "No posts found for user: #{params[:search]}"
+      end
+    else
+      @posts = Post.all.includes(:user)
+    end
   end
 
   def show

@@ -3,9 +3,21 @@
     <div class = "styled_button large_styled_button">
         <%= link_to "New Post", new_post_path %> 
     </div>
-    <% i = 1 %>
-    <% @posts.each do |post| %>
-        <p> <%= i%>. <%= link_to post.title, post_path(post.id)%> by <%= (User.find(post.user_id)).email %> </p>
-        <% i += 1 %>
+    
+    <% if @search_query.present? %>
+        <div class="search-results-header">
+            <h3>Search Results for: "<%= @search_query %>"</h3>
+            <%= link_to "Clear Search", posts_path, class: "clear-search-link" %>
+        </div>
+    <% end %>
+    
+    <% if @posts.any? %>
+        <% i = 1 %>
+        <% @posts.each do |post| %>
+            <p> <%= i%>. <%= link_to post.title, post_path(post.id)%> by <%= post.user.email %> </p>
+            <% i += 1 %>
+        <% end %>
+    <% else %>
+        <p>No posts found.</p>
     <% end %>
 </body>
