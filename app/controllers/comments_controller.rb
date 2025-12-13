@@ -8,29 +8,52 @@ class CommentsController < ApplicationController
   end
 
   def create
-    @comment = @post.comments.build(comment_params)
-    @comment.user = current_user
-    if @comment.save
-      redirect_to @post
-    else
-      render :new, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      @comment = @post.comments.build(comment_params)
+      @comment.user = current_user
+      if @comment.save
+        redirect_to @post
+      else
+        render :new, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
     end
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts
+    flash[:alert] = "The post was modified. Please refresh and try again."
+    redirect_to @post
   end
 
   def edit
   end
 
   def update
-    if @comment.update(comment_params)
-      redirect_to @post
-    else
-      render :edit, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      if @comment.update(comment_params)
+        redirect_to @post
+      else
+        render :edit, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
     end
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts
+    @comment.reload
+    flash[:alert] = "This comment was modified by another user. Please review the changes and try again."
+    render :edit, status: :conflict
   end
 
   def destroy
-    @comment.destroy
-    redirect_to @post, notice: "Comment(s) deleted"
+    ActiveRecord::Base.transaction do
+      @comment.destroy
+      flash[:notice] = "Comment deleted"
+    end
+    
+    redirect_to @post
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts
+    flash[:alert] = "This comment was modified. Please refresh and try again."
+    redirect_to @post
   end
 
   private

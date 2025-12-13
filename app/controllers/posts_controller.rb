@@ -26,23 +26,39 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_user.posts.build(post_params)
-    if @post.save
-      redirect_to @post
-    else
-      render :new, status: :unprocessable_entity
+    # Use transaction to ensure atomicity
+    ActiveRecord::Base.transaction do
+      @post = current_user.posts.build(post_params)
+      if @post.save
+        redirect_to @post
+      else
+        render :new, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
     end
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts (if post is updated concurrently)
+    flash[:alert] = "The post was modified. Please refresh and try again."
+    redirect_to posts_path
   end
 
   def edit
   end
 
   def update
-    if @post.update(post_params)
-      redirect_to @post
-    else
-      render :edit, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      if @post.update(post_params)
+        redirect_to @post
+      else
+        render :edit, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
     end
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts
+    @post.reload
+    flash[:alert] = "This post was modified by another user. Please review the changes and try again."
+    render :edit, status: :conflict
   end
 
   def destroy
