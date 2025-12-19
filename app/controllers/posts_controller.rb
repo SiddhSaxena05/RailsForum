@@ -26,18 +26,22 @@ class PostsController < ApplicationController
   end
 
   def create
-    # Use transaction to ensure atomicity
+    # Use transaction to ensure atomicity (ACID principle)
     ActiveRecord::Base.transaction do
       @post = current_user.posts.build(post_params)
-      if @post.save
+      if @post.save!
         redirect_to @post
       else
         render :new, status: :unprocessable_entity
         raise ActiveRecord::Rollback
       end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    # Handle validation errors
+    flash.now[:alert] = @post.errors.full_messages.join(", ")
+    render :new, status: :unprocessable_entity
   rescue ActiveRecord::StaleObjectError => e
-    # Handle optimistic locking conflicts (if post is updated concurrently)
+    # Handle optimistic locking conflicts
     flash[:alert] = "The post was modified. Please refresh and try again."
     redirect_to posts_path
   end
@@ -46,31 +50,47 @@ class PostsController < ApplicationController
   end
 
   def update
+    # Use transaction with optimistic locking (ACID: Atomicity + Consistency)
     ActiveRecord::Base.transaction do
-      if @post.update(post_params)
+      if @post.update!(post_params)
         redirect_to @post
       else
         render :edit, status: :unprocessable_entity
         raise ActiveRecord::Rollback
       end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    # Handle validation errors
+    flash.now[:alert] = @post.errors.full_messages.join(", ")
+    render :edit, status: :unprocessable_entity
   rescue ActiveRecord::StaleObjectError => e
-    # Handle optimistic locking conflicts
+    # Handle optimistic locking conflicts - reload to get latest version
     @post.reload
-    flash[:alert] = "This post was modified by another user. Please review the changes and try again."
+    flash.now[:alert] = "This post was modified by another user. Please review the changes and try again."
     render :edit, status: :conflict
   end
 
   def destroy
-    delete_post = current_user.posts.find(params[:id])
-    if (delete_post.presence)
-      delete_post.destroy
-      redirect_to root_path
-    else
-      flash[:alert] = "you can't delete this post"
-      redirect_to @post
+    # Use transaction to ensure atomicity (ACID principle)
+    ActiveRecord::Base.transaction do
+      delete_post = current_user.posts.find(params[:id])
+      if delete_post.present?
+        delete_post.destroy!
+        flash[:notice] = "Post deleted successfully"
+        redirect_to root_path
+      else
+        flash[:alert] = "You can't delete this post"
+        redirect_to @post
+        raise ActiveRecord::Rollback
+      end
     end
-    
+  rescue ActiveRecord::RecordNotFound => e
+    flash[:alert] = "Post not found"
+    redirect_to posts_path
+  rescue ActiveRecord::StaleObjectError => e
+    # Handle optimistic locking conflicts
+    flash[:alert] = "This post was modified. Please refresh and try again."
+    redirect_to @post
   end
 
   private
