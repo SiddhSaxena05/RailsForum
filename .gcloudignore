@@ -1,0 +1,17 @@
+.git
+.gitignore
+.bundle
+/log/*
+/tmp/*
+*.swp
+*.swo
+.DS_Store
+.env
+.env.local
+node_modules/
+coverage/
+.sass-cache/
+*.log
+storage/*
+public/assets/.sprockets-manifest-*.json
+

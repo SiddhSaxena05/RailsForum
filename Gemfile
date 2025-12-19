@@ -47,6 +47,7 @@ gem "bootsnap", require: false
 
 gem 'sassc-rails'
 gem 'bootstrap', '~> 5.2'
+gem 'google-cloud-storage', '~> 1.0', require: false
 
 
 group :development, :test do
@@ -74,3 +75,4 @@ group :test do
 end
 
 gem "devise", "~> 4.9"
+gem "dotenv-rails", groups: [:development, :production]

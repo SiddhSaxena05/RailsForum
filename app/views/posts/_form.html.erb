@@ -13,6 +13,8 @@
     <%= form.label :content %> <br>
     <%= form.text_area :content %> <br>
 
+    <%= form.hidden_field :lock_version %>
+
     <%= form.submit class: "styled_button" %>
 <% end %>
 
