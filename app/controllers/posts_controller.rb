@@ -3,7 +3,9 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   def index
     if params[:search].present?
-      user = User.where("email ILIKE ?", "%#{params[:search]}%").first
+      # Use prefix search (pattern%) to leverage B-tree index
+      # This is faster than wildcards on both sides (%pattern%)
+      user = User.where("email ILIKE ?", "#{params[:search]}%").first
       if user
         @posts = user.posts.includes(:user)
         @search_query = params[:search]
