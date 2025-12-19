@@ -1,17 +1,17 @@
 class AddTrigramIndexToUsersEmail < ActiveRecord::Migration[7.1]
   def up
-    # Create B-tree index on lowercased email for fast prefix searches
-    # This index speeds up searches like: WHERE email ILIKE 'pattern%'
-    # Using raw SQL to create index on lower(email) for case-insensitive prefix matching
+    # Create hash index on lowercased email for fast exact lookups
+    # Hash indexes are optimized for equality comparisons (=)
+    # Using raw SQL to create hash index on lower(email) for case-insensitive exact matching
     execute <<-SQL
-      CREATE INDEX index_users_on_email_btree_prefix 
-      ON users USING btree (lower(email) varchar_pattern_ops);
+      CREATE INDEX index_users_on_email_hash 
+      ON users USING hash (lower(email));
     SQL
   end
 
   def down
     execute <<-SQL
-      DROP INDEX IF EXISTS index_users_on_email_btree_prefix;
+      DROP INDEX IF EXISTS index_users_on_email_hash;
     SQL
   end
 end
